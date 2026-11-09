@@ -1,0 +1,10 @@
+export const APP_BASE_URL = "https://automationexercise.com"; 
+export const SLOWMO = 100;
+export const EXECUTION_TIMEOUT = 150000;
+export const EXPECT_TIMEOUT = 60000;
+export const NAVIGATION_TIMEOUT = 40000;
+export const ACTION_TIMEOUT = 40000;
+export const RETRY_COUNT = 1;
+export const NWORKERS = 4;
+export const BROWSER_LANGUAGE = "en-US";
+export const AUTHENTICATION_FOLDER = "playwright/.auth";
