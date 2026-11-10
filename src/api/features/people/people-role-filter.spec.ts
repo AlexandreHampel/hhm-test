@@ -1,7 +1,7 @@
 import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture'
 import { HTTP_STATUS } from '../../helpers/expected-status';
-import { expectApiError, expectListNotToContain, expectListToContainOnce, expectPersonContract } from '../../assertions/people.assertions';
-import { buildPerson, buildPersonWithCustomRoles } from '../../payloads/person.payload';
+import { expectApiError, expectListNotToContain, expectListToContainOnce, expectPersonContract } from '../../assertions/people';
+import { buildPerson, buildPersonWithCustomRoles } from '../../payloads/person';
 import { Person, PersonPayload, STANDARD_ROLES, SUPPORTED_ROLES } from '../../helpers/models/person';
 
 test.describe('People API | Filter people by role', () => {

@@ -1,8 +1,8 @@
 import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture'
 import { HTTP_STATUS } from '../../helpers/expected-status';
 import { expectStatus } from '../../helpers/http';
-import { expectApiError, expectListNotToContain, expectListToContainOnce } from '../../assertions/people.assertions';
-import { buildPerson, MALFORMED_PERSON_IDS, UNKNOWN_PERSON_ID } from '../../payloads/person.payload';
+import { expectApiError, expectListNotToContain, expectListToContainOnce } from '../../assertions/people';
+import { buildPerson, MALFORMED_PERSON_IDS, UNKNOWN_PERSON_ID } from '../../payloads/person';
 import { Person } from '../../helpers/models/person';
 
 test.describe('People API | Delete person', () => {
