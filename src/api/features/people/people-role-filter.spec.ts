@@ -1,4 +1,4 @@
-import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture'
+import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture';
 import { HTTP_STATUS } from '../../helpers/expected-status';
 import { expectApiError, expectListNotToContain, expectListToContainOnce, expectPersonContract } from '../../assertions/people';
 import { buildPerson, buildPersonWithCustomRoles } from '../../payloads/person';

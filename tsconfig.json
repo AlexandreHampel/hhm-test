@@ -9,5 +9,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["config", "fixtures", "support", "features", "*.ts"]
+  "include": ["config", "fixtures", "src", "*.ts"]
 }

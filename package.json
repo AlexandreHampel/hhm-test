@@ -6,6 +6,8 @@
   "scripts": {
     "test:api": "playwright test -c playwright.api.config.ts",
     "test:ui": "playwright test -c playwright.ui.config.ts",
+    "test:ui:headless": "playwright test -c playwright.ui.config.ts --project=headless-chrome",
+    "report:ui": "playwright show-report playwright-report/ui",
     "report:api": "playwright show-report playwright-report/api",
     "typecheck": "tsc --noEmit"
   },

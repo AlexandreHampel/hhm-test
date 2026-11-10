@@ -1,4 +1,4 @@
-export const APP_BASE_URL = "https://automationexercise.com"; 
+export const APP_BASE_URL = process.env.HHM_UI_BASE_URL ?? "http://localhost:4200";
 export const SLOWMO = 100;
 export const EXECUTION_TIMEOUT = 150000;
 export const EXPECT_TIMEOUT = 60000;
@@ -8,3 +8,4 @@ export const RETRY_COUNT = 1;
 export const NWORKERS = 4;
 export const BROWSER_LANGUAGE = "en-US";
 export const AUTHENTICATION_FOLDER = "playwright/.auth";
+export const BROWSER_EXECUTABLE_PATH = process.env.HHM_BROWSER_PATH;

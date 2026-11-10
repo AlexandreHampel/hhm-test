@@ -1,8 +1,8 @@
-import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture'
+import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture';
 import { HTTP_STATUS } from '../../helpers/expected-status';
 import { expectStatus, readJson } from '../../helpers/http';
 import { expectApiError, expectListNotToContain, expectListToContainOnce, expectPersonContract, expectPersonToMatchPayload } from '../../assertions/people';
-import { buildPerson, buildPersonWithCustomRoles, buildUpdatePayload, MALFORMED_PERSON_IDS, UNKNOWN_PERSON_ID } from '../../payloads/person';
+import { buildPerson, buildPersonWithCustomRoles, buildUpdatePayload } from '../../payloads/person';
 import { Person, PersonPayload } from '../../helpers/models/person';
 
 test.describe('People API | Update person', () => {
@@ -261,7 +261,7 @@ test.describe('People API | Update person', () => {
       tag: [...API_TAGS, '@NEGATIVE'],
     }, async ({ peopleApi }) => {
       await test.step('Update a person by an unknown identifier', async () => {
-        const response = await peopleApi.update(UNKNOWN_PERSON_ID, buildPerson());
+        const response = await peopleApi.update('ffffffffffffffffffffffff', buildPerson());
         await expectApiError(response, HTTP_STATUS.NOT_FOUND, /not found/i);
       });
     });
@@ -270,7 +270,7 @@ test.describe('People API | Update person', () => {
       tag: [...API_TAGS, '@NEGATIVE', '@EDGE'],
     }, async ({ peopleApi }) => {
       await test.step('Update a person by a malformed identifier', async () => {
-        const response = await peopleApi.update(MALFORMED_PERSON_IDS[0], buildPerson());
+        const response = await peopleApi.update('not-an-object-id', buildPerson());
         await expectApiError(response, HTTP_STATUS.MALFORMED_ID);
       });
     });

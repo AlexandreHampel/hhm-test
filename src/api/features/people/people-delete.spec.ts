@@ -2,7 +2,7 @@ import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture';
 import { HTTP_STATUS } from '../../helpers/expected-status';
 import { expectStatus } from '../../helpers/http';
 import { expectApiError, expectListNotToContain, expectListToContainOnce } from '../../assertions/people';
-import { buildPerson, MALFORMED_PERSON_IDS, UNKNOWN_PERSON_ID } from '../../payloads/person';
+import { buildPerson } from '../../payloads/person';
 import { Person } from '../../helpers/models/person';
 
 test.describe('People API | Delete person', () => {
@@ -95,7 +95,7 @@ test.describe('People API | Delete person', () => {
       tag: [...API_TAGS, '@NEGATIVE'],
     }, async ({ peopleApi }) => {
       await test.step('Delete a person by an unknown identifier', async () => {
-        await expectApiError(await peopleApi.delete(UNKNOWN_PERSON_ID), HTTP_STATUS.NOT_FOUND, /not found/i);
+        await expectApiError(await peopleApi.delete('ffffffffffffffffffffffff'), HTTP_STATUS.NOT_FOUND, /not found/i);
       });
     });
 
@@ -103,7 +103,7 @@ test.describe('People API | Delete person', () => {
       tag: [...API_TAGS, '@NEGATIVE', '@EDGE'],
     }, async ({ peopleApi }) => {
       await test.step('Delete a person by a malformed identifier', async () => {
-        await expectApiError(await peopleApi.delete(MALFORMED_PERSON_IDS[0]), HTTP_STATUS.MALFORMED_ID);
+        await expectApiError(await peopleApi.delete('not-an-object-id'), HTTP_STATUS.MALFORMED_ID);
       });
     });
   });

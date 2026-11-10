@@ -2,7 +2,7 @@ import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture';
 import { HTTP_STATUS } from '../../helpers/expected-status';
 import { expectStatus, readJson } from '../../helpers/http';
 import { expectApiError, expectListToContainOnce, expectPersonContract, expectPersonToMatchPayload } from '../../assertions/people';
-import { buildPerson, buildPersonWithCustomRoles, MALFORMED_PERSON_IDS, UNKNOWN_PERSON_ID } from '../../payloads/person';
+import { buildPerson, buildPersonWithCustomRoles } from '../../payloads/person';
 import { generateCpf } from '../../helpers/cpf';
 import { Person } from '../../helpers/models/person';
 
@@ -78,7 +78,7 @@ test.describe('People API | Read people', () => {
       tag: [...API_TAGS, '@NEGATIVE'],
     }, async ({ peopleApi }) => {
       await test.step('Get a person by an unknown identifier', async () => {
-        const response = await peopleApi.findById(UNKNOWN_PERSON_ID);
+        const response = await peopleApi.findById('ffffffffffffffffffffffff');
         await expectApiError(response, HTTP_STATUS.NOT_FOUND, /not found/i);
       });
     });
@@ -86,7 +86,7 @@ test.describe('People API | Read people', () => {
     test('Returns a client error, not a server error, for a malformed ID', {
       tag: [...API_TAGS, '@NEGATIVE', '@EDGE'],
     }, async ({ peopleApi }) => {
-      for (const malformedId of MALFORMED_PERSON_IDS) {
+      for (const malformedId of ['abc', 'not-an-object-id', 'zzzzzzzzzzzzzzzzzzzzzzzz']) {
         await test.step(`Get a person by the malformed identifier "${malformedId}"`, async () => {
           const response = await peopleApi.findById(malformedId);
           await expectApiError(response, HTTP_STATUS.MALFORMED_ID);

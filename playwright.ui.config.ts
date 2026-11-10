@@ -6,7 +6,7 @@ const ci = Boolean(process.env.CI);
 
 const chromeDefaults = {
   ...devices['Desktop Chrome'],
-  channel: 'chrome' as const,
+  ...(UI_SETTINGS.BROWSER_EXECUTABLE_PATH ? {} : { channel: 'chrome' as const }),
   locale: 'en',
 };
 
@@ -21,7 +21,7 @@ const browserLanguage = {
 };
 
 export default defineConfig({
-  testDir: './features/ui',
+  testDir: './src/ui/features',
   outputDir: './test-results/ui',
 
   globalSetup: require.resolve('./config/global-setup.ts'),
@@ -81,6 +81,7 @@ export default defineConfig({
 
         launchOptions: {
           slowMo: UI_SETTINGS.SLOWMO,
+          executablePath: UI_SETTINGS.BROWSER_EXECUTABLE_PATH,
           args: ['--start-maximized', ...browserLanguage.args],
           env: browserLanguage.env,
         },
@@ -99,6 +100,7 @@ export default defineConfig({
 
         launchOptions: {
           slowMo: UI_SETTINGS.SLOWMO,
+          executablePath: UI_SETTINGS.BROWSER_EXECUTABLE_PATH,
           args: browserLanguage.args,
           env: browserLanguage.env,
         },
