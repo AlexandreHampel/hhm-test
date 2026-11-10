@@ -1,10 +1,10 @@
-import { test, expect, API_TAGS } from '../../../fixtures/api.fixture';
-import { HTTP_STATUS } from '../../../helpers/expected-status';
-import { expectStatus, readJson } from '../../../helpers/http';
-import { expectApiError, expectListToContainOnce, expectPersonContract, expectPersonToMatchPayload } from '../../../assertions/api/people.assertions';
-import { buildPerson, buildPersonWithCustomRoles, MALFORMED_PERSON_IDS, UNKNOWN_PERSON_ID } from '../../../payloads/person.payload';
-import { generateCpf } from '../../../helpers/cpf';
-import { Person } from '../../../helpers/models/person';
+import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture'
+import { HTTP_STATUS } from '../../helpers/expected-status';
+import { expectStatus, readJson } from '../../helpers/http';
+import { expectApiError, expectListToContainOnce, expectPersonContract, expectPersonToMatchPayload } from '../../assertions/people.assertions';
+import { buildPerson, buildPersonWithCustomRoles, MALFORMED_PERSON_IDS, UNKNOWN_PERSON_ID } from '../../payloads/person.payload';
+import { generateCpf } from '../../helpers/cpf';
+import { Person } from '../../helpers/models/person';
 
 test.describe('People API | Read people', () => {
   test.describe('POSITIVE', () => {

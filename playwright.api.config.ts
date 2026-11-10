@@ -5,7 +5,7 @@ import * as API_SETTINGS from './config/api-settings';
 const ci = Boolean(process.env.CI);
 
 export default defineConfig({
-  testDir: './features/api',
+  testDir: './src/api/features',
   outputDir: './test-results/api',
   
   globalSetup: require.resolve('./config/global-setup.ts'),

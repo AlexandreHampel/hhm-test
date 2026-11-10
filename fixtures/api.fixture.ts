@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { PeopleClient } from '../clients/people.client';
+import { PeopleClient } from '../src/api/clients/people.client';
 
 type ApiFixtures = {
   peopleApi: PeopleClient;

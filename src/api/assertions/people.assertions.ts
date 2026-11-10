@@ -1,6 +1,6 @@
 import { APIResponse, expect } from '@playwright/test';
-import { ApiError, OTHER_ROLE, Person, PersonPayload, SUPPORTED_ROLES } from '../../helpers/models/person';
-import { expectStatus, readJson } from '../../helpers/http';
+import { ApiError, OTHER_ROLE, Person, PersonPayload, SUPPORTED_ROLES } from '../helpers/models/person';
+import { expectStatus, readJson } from '../helpers/http';
 
 const OBJECT_ID_PATTERN = /^[a-f\d]{24}$/i;
 

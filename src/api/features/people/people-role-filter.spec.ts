@@ -1,8 +1,8 @@
-import { test, expect, API_TAGS } from '../../../fixtures/api.fixture';
-import { HTTP_STATUS } from '../../../helpers/expected-status';
-import { expectApiError, expectListNotToContain, expectListToContainOnce, expectPersonContract } from '../../../assertions/api/people.assertions';
-import { buildPerson, buildPersonWithCustomRoles } from '../../../payloads/person.payload';
-import { Person, PersonPayload, STANDARD_ROLES, SUPPORTED_ROLES } from '../../../helpers/models/person';
+import { test, expect, API_TAGS } from '../../../../fixtures/api.fixture'
+import { HTTP_STATUS } from '../../helpers/expected-status';
+import { expectApiError, expectListNotToContain, expectListToContainOnce, expectPersonContract } from '../../assertions/people.assertions';
+import { buildPerson, buildPersonWithCustomRoles } from '../../payloads/person.payload';
+import { Person, PersonPayload, STANDARD_ROLES, SUPPORTED_ROLES } from '../../helpers/models/person';
 
 test.describe('People API | Filter people by role', () => {
   test.describe('POSITIVE', () => {
