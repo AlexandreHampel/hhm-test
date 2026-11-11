@@ -208,6 +208,32 @@ test.describe('Visits API | Read visits', () => {
       });
     });
 
+    test('Filters visits by responsible professional', {
+      tag: [...VISIT_API_TAGS, '@POSITIVE'],
+    }, async ({ visitsApi }) => {
+      let doctorId!: string;
+      let attended!: Visit;
+      let unattended!: Visit;
+
+      await test.step('Open one visit attended by a doctor and one without a professional', async () => {
+        doctorId = (await visitsApi.registerPerson(['DOCTOR']))._id;
+        attended = await visitsApi.openVisit(buildVisit((await visitsApi.registerPatient())._id, { attendingProfessionalId: doctorId }));
+        unattended = await visitsApi.openVisit(buildVisit((await visitsApi.registerPatient())._id));
+      });
+
+      await test.step('The professional filter returns only the attended visit', async () => {
+        expect(idsOf(await visitsApi.listVisits({ professionalId: doctorId }))).toEqual([attended._id]);
+      });
+
+      await test.step('Combined with the patient of the other visit, it returns nothing', async () => {
+        expect(await visitsApi.listVisits({ professionalId: doctorId, patientId: referenceId(unattended.patientId)! })).toEqual([]);
+      });
+
+      await test.step('A well-formed professional ID that attends nothing returns an empty list', async () => {
+        expect(await visitsApi.listVisits({ professionalId: UNKNOWN_OBJECT_ID })).toEqual([]);
+      });
+    });
+
     test('Filters visits by admission date range', {
       tag: [...VISIT_API_TAGS, '@POSITIVE', '@CONTRACT-ASSUMPTION'],
     }, async ({ visitsApi }) => {
@@ -363,6 +389,7 @@ test.describe('Visits API | Read visits', () => {
       { label: 'an unsupported status', query: { status: 'ARCHIVED' } },
       { label: 'an unsupported type', query: { type: 'SURGERY' } },
       { label: 'a malformed patient ID', query: { patientId: 'not-an-object-id' } },
+      { label: 'a malformed professional ID', query: { professionalId: 'not-an-object-id' } },
       {
         label: 'an unparseable admission start date',
         query: { admissionFrom: 'not-a-date' },

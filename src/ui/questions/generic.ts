@@ -87,3 +87,27 @@ export const TodayInTheBrowser = () =>
 
 /** Console errors recorded since console recording started. */
 export const ConsoleErrors = () => question('Console errors', async (page) => recordedConsoleErrors(page));
+
+/** Computed CSS properties of the target, for visual identity checks against established pages. */
+export const StyleOf = {
+  the: (target: Target) => ({
+    properties: (names: readonly string[]) =>
+      question(`Style of the ${target}`, async (page) => {
+        const locator = target.resolveFor(page);
+
+        return (await locator.count())
+          ? locator.evaluate((element, keys) => Object.fromEntries(keys.map((key) => [key, getComputedStyle(element).getPropertyValue(key)])), [...names])
+          : null;
+      }),
+  }),
+};
+
+/** How many pixels the page is wider than the window; 0 means no horizontal scrolling. */
+export const HorizontalOverflow = () =>
+  question('Horizontal overflow of the page', (page) => page.evaluate(() => Math.max(0, document.documentElement.scrollWidth - window.innerWidth)));
+
+/** Text of every element the target matches, one entry per element. */
+export const TextsOf = {
+  the: (target: Target) =>
+    question(`Texts of the ${target}`, async (page) => (await target.resolveFor(page).allInnerTexts()).map(normalise)),
+};

@@ -18,6 +18,7 @@ export const Dashboard = {
  */
 export const Landing = {
   MAIN_HEADING: Target.the('Landing page main heading').locatedBy((page) => page.getByRole('heading', { level: 1 })),
+  ACCESS_SYSTEM_BUTTON: Target.the('Access System button').locatedByTestId('landing-access-system-button'),
 };
 
 /** Application shell, used to check whether any page is rendered at all. */

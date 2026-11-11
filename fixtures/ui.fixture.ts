@@ -26,3 +26,6 @@ export const UI_TAGS = ['@UI', '@People'] as const;
 
 /** Common tags for the module dashboard UI scenarios. */
 export const DASHBOARD_TAGS = ['@UI', '@Dashboard'] as const;
+
+/** Common tags for the Patient Visits UI scenarios. */
+export const VISIT_UI_TAGS = ['@UI', '@Visits'] as const;

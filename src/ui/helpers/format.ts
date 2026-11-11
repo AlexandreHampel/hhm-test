@@ -59,3 +59,25 @@ export function addDays(isoDate: string, days: number): string {
 
   return date.toISOString().slice(0, 10);
 }
+
+/** Formats a browser-local `YYYY-MM-DDTHH:mm` date-time as the visit pages display it: day/month/year hours:minutes. */
+export function formatDateTime(localDateTime: string): string {
+  const [date, time] = localDateTime.split('T');
+
+  return `${formatBirthDate(date)} ${time.slice(0, 5)}`;
+}
+
+/** Shifts a browser-local `YYYY-MM-DDTHH:mm` date-time by whole minutes, without any timezone conversion. */
+export function shiftDateTime(localDateTime: string, minutes: number): string {
+  const date = new Date(`${localDateTime.slice(0, 16)}:00.000Z`);
+  date.setUTCMinutes(date.getUTCMinutes() + minutes);
+
+  return date.toISOString().slice(0, 16);
+}
+
+/** Reads a displayed `dd/MM/yyyy HH:mm` date-time back into the sortable `YYYY-MM-DDTHH:mm` shape, or null when it is not one. */
+export function parseDisplayedDateTime(displayed: string): string | null {
+  const match = /^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/.exec(displayed.trim());
+
+  return match ? `${match[3]}-${match[2]}-${match[1]}T${match[4]}:${match[5]}` : null;
+}
