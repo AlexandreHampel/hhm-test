@@ -6,7 +6,6 @@ import { Wait } from '../interactions/wait';
 import { PersonFormData, Role, SUPPORTED_ROLES } from '../helpers/models';
 import { CheckedRoles, CustomRoleIds } from '../questions/people';
 import { ValueOf } from '../questions/generic';
-import { rememberSubmittedPerson } from '../screenplay/memory';
 import { perform, task, taskWhere } from '../screenplay/core';
 import { ErrorMessage, PeopleList, PersonForm, SuccessMessage } from '../targets/people';
 
@@ -81,19 +80,8 @@ export const FillThePersonForm = {
     ),
 };
 
-/**
- * Clicks Save without expecting any outcome. The submitted CPF is remembered,
- * so a person created by the scenario can be removed through the interface afterwards.
- */
-export const SubmitThePersonForm = () =>
-  taskWhere('Submit the person form', async (page) => {
-    rememberSubmittedPerson(page, {
-      cpf: (await ValueOf.the(PersonForm.CPF_INPUT).answeredBy(page)) ?? '',
-      roles: await CheckedRoles().answeredBy(page),
-    });
-
-    await perform(page, Click.on(PersonForm.SAVE_BUTTON));
-  });
+/** Clicks Save without expecting any outcome. */
+export const SubmitThePersonForm = () => task('Submit the person form', Click.on(PersonForm.SAVE_BUTTON));
 
 /** Saves the form and waits for the success message. */
 export const SaveThePerson = () =>

@@ -7,22 +7,13 @@ import { Person } from '../helpers/models/person';
 /**
  * Client for the People API.
  *
- * Raw methods return the APIResponse so specs can assert status codes and
- * error bodies. Every person created through this client, even by a negative
- * scenario that unexpectedly succeeds, is tracked and removed by `cleanup()`,
- * keeping scenarios isolated and repeatable.
+ * Raw methods return the APIResponse for status and body assertions.
  */
 export class PeopleClient {
-  private readonly createdIds = new Set<string>();
-  private readonly retainedIds = new Set<string>();
-
   constructor(private readonly request: APIRequestContext) {}
 
   async create(payload: unknown): Promise<APIResponse> {
-    const response = await this.request.post(PEOPLE_ENDPOINTS.root, { data: payload as object });
-    await this.track(response);
-
-    return response;
+    return this.request.post(PEOPLE_ENDPOINTS.root, { data: payload as object });
   }
 
   async update(id: string, payload: unknown): Promise<APIResponse> {
@@ -51,13 +42,10 @@ export class PeopleClient {
 
   /** Sends a raw, possibly malformed, JSON body to the create endpoint. */
   async createRaw(body: string): Promise<APIResponse> {
-    const response = await this.request.post(PEOPLE_ENDPOINTS.root, {
+    return this.request.post(PEOPLE_ENDPOINTS.root, {
       headers: { 'Content-Type': 'application/json' },
       data: body,
     });
-    await this.track(response);
-
-    return response;
   }
 
   /** Creates a person and asserts success. Use it for scenario preconditions. */
@@ -93,42 +81,4 @@ export class PeopleClient {
     return body;
   }
 
-  /** Excludes a created person from cleanup, for example when records that reference it must be kept. */
-  retain(id: string): void {
-    this.retainedIds.add(id);
-  }
-
-  /** Deletes every person created through this client. Best effort: it never fails the scenario. */
-  async cleanup(): Promise<void> {
-    for (const id of [...this.createdIds].reverse()) {
-      if (this.retainedIds.has(id)) {
-        continue;
-      }
-
-      try {
-        await this.request.delete(PEOPLE_ENDPOINTS.byId(id));
-      } catch {
-        // Cleanup must not mask the real scenario result.
-      }
-    }
-
-    this.createdIds.clear();
-    this.retainedIds.clear();
-  }
-
-  private async track(response: APIResponse): Promise<void> {
-    if (!response.ok()) {
-      return;
-    }
-
-    try {
-      const body = (await response.json()) as Partial<Person>;
-
-      if (typeof body?._id === 'string') {
-        this.createdIds.add(body._id);
-      }
-    } catch {
-      // Success body without JSON content: nothing to track.
-    }
-  }
 }

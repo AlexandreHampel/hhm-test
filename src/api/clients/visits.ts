@@ -1,8 +1,6 @@
 import { APIRequestContext, APIResponse, expect } from '@playwright/test';
 import { VISITS_ENDPOINTS } from './endpoints';
 import { PeopleClient } from './people';
-import { DatabaseClient } from './database';
-import { COLLECTIONS } from './collections';
 import { expectStatus, readJson } from '../helpers/http';
 import { Person, Role } from '../helpers/models/person';
 import { ClosingMovementType, MovementPayload, Visit, VisitMovement, VisitPayload, VisitStatus } from '../helpers/models/visit';
@@ -44,40 +42,25 @@ export function extractList<T>(body: unknown, context: string): T[] {
  * Raw methods return the APIResponse so specs can assert status codes and
  * error bodies; assertive helpers are meant for scenario preconditions.
  *
- * The API exposes no deletion for visits or movements (rule 15), so `cleanup()`
- * removes every visit the scenario created, together with its movements,
- * directly in the database. The people it registered are then deleted by the
- * People client, so a finished scenario leaves no data behind. Without a
- * database (cleanup disabled) the visits stay, and so do their people.
  */
 export class VisitsClient {
-  private readonly createdVisitIds = new Set<string>();
-  private readonly registeredPeopleIds = new Set<string>();
-
   constructor(
     private readonly request: APIRequestContext,
     private readonly people: PeopleClient,
-    private readonly database: DatabaseClient | undefined,
   ) {}
 
   // ---------- Visits: raw requests ----------
 
   async create(payload: unknown): Promise<APIResponse> {
-    const response = await this.request.post(VISITS_ENDPOINTS.root, { data: payload as object });
-    await this.trackVisit(response);
-
-    return response;
+    return this.request.post(VISITS_ENDPOINTS.root, { data: payload as object });
   }
 
   /** Sends a raw, possibly malformed, JSON body to the create endpoint. */
   async createRaw(body: string): Promise<APIResponse> {
-    const response = await this.request.post(VISITS_ENDPOINTS.root, {
+    return this.request.post(VISITS_ENDPOINTS.root, {
       headers: { 'Content-Type': 'application/json' },
       data: body,
     });
-    await this.trackVisit(response);
-
-    return response;
   }
 
   async update(id: string, payload: unknown): Promise<APIResponse> {
@@ -127,7 +110,6 @@ export class VisitsClient {
     }
 
     const person = await this.people.createPerson(payload);
-    this.registeredPeopleIds.add(person._id);
 
     return person;
   }
@@ -212,39 +194,4 @@ export class VisitsClient {
     return { patient, visit };
   }
 
-  // ---------- Isolation ----------
-
-  /**
-   * Purges every visit created by the scenario, and every visit of the people
-   * it registered, with all their movements. Runs before the People cleanup,
-   * so no visit is ever left pointing at a deleted person. A failure is
-   * reported instead of swallowed, because it would leave data behind. When
-   * database cleanup is disabled, the registered people are kept instead.
-   */
-  async cleanup(): Promise<void> {
-    if (this.database) {
-      await this.database.purge(COLLECTIONS.visits, { ids: [...this.createdVisitIds], ownerIds: [...this.registeredPeopleIds] });
-    } else {
-      this.registeredPeopleIds.forEach((id) => this.people.retain(id));
-    }
-
-    this.createdVisitIds.clear();
-    this.registeredPeopleIds.clear();
-  }
-
-  private async trackVisit(response: APIResponse): Promise<void> {
-    if (!response.ok()) {
-      return;
-    }
-
-    try {
-      const body = (await response.json()) as Partial<Visit>;
-
-      if (typeof body?._id === 'string') {
-        this.createdVisitIds.add(body._id);
-      }
-    } catch {
-      // Success body without JSON content: visits of registered people are still removed by patient.
-    }
-  }
 }

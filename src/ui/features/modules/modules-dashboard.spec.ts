@@ -81,7 +81,7 @@ test.describe('Modules UI | Dashboard', () => {
 
   test.describe('NEGATIVE', () => {
     test('No longer serves the prototype patients page', {
-      tag: [...DASHBOARD_TAGS, '@NEGATIVE', '@CLEANUP'],
+      tag: [...DASHBOARD_TAGS, '@NEGATIVE', '@LEGACY_ROUTE'],
     }, async ({ page }) => {
       await perform(page, RecordConsoleErrors(), Navigate.to(PROTOTYPE_PATIENTS_ROUTE));
 

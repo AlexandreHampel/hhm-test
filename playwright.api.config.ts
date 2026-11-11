@@ -9,7 +9,6 @@ export default defineConfig({
   outputDir: './test-results/api',
   
   globalSetup: require.resolve('./config/global-setup.ts'),
-  globalTeardown: require.resolve('./config/global-teardown.ts'),
 
   timeout: API_SETTINGS.EXECUTION_TIMEOUT,
 
