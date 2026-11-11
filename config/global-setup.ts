@@ -43,6 +43,9 @@ function setupAPI(): void {
   console.log(`Test timeout: ${API_SETTINGS.EXECUTION_TIMEOUT} ms`);
   console.log(`Assertion timeout: ${API_SETTINGS.EXPECT_TIMEOUT} ms`);
   console.log(`Action timeout: ${API_SETTINGS.ACTION_TIMEOUT} ms`);
+  console.log(`Test data cleanup database: ${!API_SETTINGS.DATABASE_CLEANUP
+    ? 'disabled (DATABASE_CLEANUP is false)'
+    : API_SETTINGS.MONGO_URI_MASKED ?? 'NOT configured (scenarios that need it will fail)'}`);
 }
 
 function validateURL(url: string): void {

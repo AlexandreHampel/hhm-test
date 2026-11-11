@@ -14,6 +14,7 @@ import { Person } from '../helpers/models/person';
  */
 export class PeopleClient {
   private readonly createdIds = new Set<string>();
+  private readonly retainedIds = new Set<string>();
 
   constructor(private readonly request: APIRequestContext) {}
 
@@ -92,9 +93,18 @@ export class PeopleClient {
     return body;
   }
 
+  /** Excludes a created person from cleanup, for example when records that reference it must be kept. */
+  retain(id: string): void {
+    this.retainedIds.add(id);
+  }
+
   /** Deletes every person created through this client. Best effort: it never fails the scenario. */
   async cleanup(): Promise<void> {
     for (const id of [...this.createdIds].reverse()) {
+      if (this.retainedIds.has(id)) {
+        continue;
+      }
+
       try {
         await this.request.delete(PEOPLE_ENDPOINTS.byId(id));
       } catch {
@@ -103,6 +113,7 @@ export class PeopleClient {
     }
 
     this.createdIds.clear();
+    this.retainedIds.clear();
   }
 
   private async track(response: APIResponse): Promise<void> {

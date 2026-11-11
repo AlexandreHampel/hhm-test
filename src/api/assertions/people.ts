@@ -20,7 +20,7 @@ function isValidDate(value: unknown): boolean {
  */
 export async function expectApiError(
   response: APIResponse,
-  expectedStatus: readonly number[],
+  expectedStatus: number | readonly number[],
   messagePattern?: RegExp,
 ): Promise<ApiError> {
   await expectStatus(response, expectedStatus);
